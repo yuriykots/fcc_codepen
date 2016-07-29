@@ -5,8 +5,17 @@
 ///I need to grab all data and put it in state or props, or separeate element.
 
 //Add two ajax function that will give as two array. Sort them and assign to two different values. Than create react element. And assing one array as a state. Add button that will fire a function that will change state to second array.
-var alltimeArray  = ["fuck","my","life"];
-var recentArray  = ["one", "wto", 'three'];
+//var alltimeArray  = ["fuck","my","life"];
+/*var array  = ["one","two","tree"];
+var recentArray =  [{"username":"Beky", "alltime":500, "recent":264},
+    {"username":"Monika", "alltime":365, "recent": 230},
+    {"username":"Fibi", "alltime":150, "recent": 160}
+];
+var alltimeArray=  [{"username":"John", "alltime":500, "recent":32},
+    {"username":"Karla", "alltime":365, "recent": 54},
+    {"username":"Casey", "alltime":150, "recent": 80}
+];*/
+//var recent  = [{username: "Yuriy", alltime: 26, recent 305 }];
 //var recent  = [{username: "Yuriy", alltime: 26, recent 305 }];
 /*
   $.get("https://fcctop100.herokuapp.com/api/fccusers/top/recent", function(data, status) {
@@ -24,9 +33,24 @@ var recentArray  = ["one", "wto", 'three'];
        return 0;
        })
      });
-
+hello
 */
 var App = React.createClass({
+
+  getData(time) {
+		$.ajax({
+      url: this.props.url + time,
+      dataType: 'json',
+      cache: false,
+      success: function(data) {
+        this.setState({scores: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url + time, status, err.toString());
+      }.bind(this)
+    });
+	}
+
 
       getInitialState: function() {
             return {

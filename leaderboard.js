@@ -1,113 +1,140 @@
-///1. Element Person: image, name, points in 30 days, all points.
 
-///2. Board. Sorted by number. Sorted by most amount of points.
 
-///I need to grab all data and put it in state or props, or separeate element.
+        //1 LEADERBORD-Body
+            //LEADERBOARD HEADING with buttons.
+            //USER
 
-//Add two ajax function that will give as two array. Sort them and assign to two different values. Than create react element. And assing one array as a state. Add button that will fire a function that will change state to second array.
-//var alltimeArray  = ["fuck","my","life"];
-/*var array  = ["one","two","tree"];
-var recentArray =  [{"username":"Beky", "alltime":500, "recent":264},
-    {"username":"Monika", "alltime":365, "recent": 230},
-    {"username":"Fibi", "alltime":150, "recent": 160}
-];
-var alltimeArray=  [{"username":"John", "alltime":500, "recent":32},
-    {"username":"Karla", "alltime":365, "recent": 54},
-    {"username":"Casey", "alltime":150, "recent": 80}
-];*/
-//var recent  = [{username: "Yuriy", alltime: 26, recent 305 }];
-//var recent  = [{username: "Yuriy", alltime: 26, recent 305 }];
-/*
-  $.get("https://fcctop100.herokuapp.com/api/fccusers/top/recent", function(data, status) {
-       recent = data.sort(function(a, b) {
-       if(a.recent > b.recent) return -1;
-       if(a.recent < b.recent) return 1;
-       return 0;
-       })
-     });
+var App = React.createClass({
+   render: function() {
+    return (
+        <div>
+        <Header/>
+        <LeaderboardBody/>
+        <Footer/>
+        </div>
+    );
+  }
+});
 
-  $.get("https://fcctop100.herokuapp.com/api/fccusers/top/recent", function(data, status) {
-       alltime = data.sort(function(a, b) {
+var Header = React.createClass({
+   render: function() {
+    return (
+        <h3> Free Code Camp Leader Board </h3>
+    );
+  }
+});
+
+var Footer = React.createClass({
+   render: function() {
+    return (
+        <h1>Footer</h1>
+    );
+  }
+});
+
+var User = React.createClass({
+   render: function() {
+    return (
+        <tr>
+
+         <td >{this.props.index} </td>
+        <td > <img src={this.props.img} height="42" width="42"></img>
+        <a href={"https://www.freecodecamp.com/"+this.props.username} target="_blank">{this.props.username}</a></td>
+
+         <td >{this.props.alltime}</td>
+         <td >{this.props.recent}</td>
+        </tr>
+    );
+  }
+});
+var BoardHeading = React.createClass({
+   render: function() {
+    return (
+      <div>
+            <button onClick={this.props.onChange}> Top Recent </button>
+            <button onClick={this.props.onChange2}> Top AllTime </button>
+      </div>
+    );
+  }
+});
+
+
+var LeaderboardBody = React.createClass({
+
+getInitialState: function() {
+    return {
+      list: []
+    };
+  },
+
+  getAllTime() {
+      this.serverRequest =  $.get("https://fcctop100.herokuapp.com/api/fccusers/top/alltime",  function (result) {
+       var sorted = result.sort(function(a, b) {
        if(a.alltime > b.alltime) return -1;
        if(a.alltime < b.alltime) return 1;
        return 0;
        })
-     });
-hello
-*/
-var App = React.createClass({
+         this.setState({
+          list: sorted
+          });
+        console.log(this.state.list);
+      }.bind(this));
+  },
 
-  getData(time) {
-		$.ajax({
-      url: this.props.url + time,
-      dataType: 'json',
-      cache: false,
-      success: function(data) {
-        this.setState({scores: data});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url + time, status, err.toString());
-      }.bind(this)
-    });
-	}
-
-
-      getInitialState: function() {
-            return {
-              list: alltimeArray,
-            };
-      },
-
-   changeList(){
-        this.state.list = recentArray;
-      },
-
-  changeTitle(title){
-    this.setState({title});
-    },
+    getRecent() {
+      this.serverRequest =  $.get("https://fcctop100.herokuapp.com/api/fccusers/top/recent",  function (result) {
+       var sorted = result.sort(function(a, b) {
+       if(a.recent > b.recent) return -1;
+       if(a.recent < b.recent) return 1;
+       return 0;
+       })
+         this.setState({
+          list: sorted
+          });
+        console.log(this.state.list);
+      }.bind(this));
+  },
 
 
-      render: function(){
-            return (
-            <div>
-                <Board changeList={this.changeList.bind(this)} changeTitle={this.changeTitle.bind(this)} list={this.state.list}/>
-             </div>
-            );
-       }
+  componentDidMount: function() {
+      this.getAllTime();
+  },
+
+  onChange(e) {
+        console.log("button is clicked");
+        this.getRecent()
+     },
+  onChange2(e) {
+        console.log("button is clicked");
+        this.getAllTime()
+     },
+
+ render: function() {
+    return (
+          <div>
+            <BoardHeading onChange={this.onChange} onChange2={this.onChange2}/>
+         {this.state.list.map(function(user, index) {
+             return <div>
+   <User username={user.username} index={index+1} alltime={user.alltime} recent={user.recent} img={user.img}/>
+            </div>
+
+           </div>
+    );
+  }
 });
 
 var Board = React.createClass({
 
-      onChange(e) {
-        console.log("button is clicked")
-        console.log(this.props)
-        this.props.changeTitle("Hello fuck")
-        this.props.changeList();
-      },
 
-       render: function() {
-        //{console.log("button is clicked")}
-        return (
 
+render: function() {
+
+    return (
           <div>
             <h3> Free Code Camp Leader Board </h3>
-            <button onClick={this.onChange} > button </button>
-              {this.props.list.map(function(user) {
-              return <div>
-                <div className ="row">
-                  <div className="col-md-3">{user}</div>
-                  <div className="col-md-3">{user}</div>
-                  <div className="col-md-3">{user}</div>
-                </div>
-              </div>
-              //user.username
-              //user.recent
-              //user.top
-              })
-            }
            </div>
-        );
-      }
+    );
+  }
 });
 
 

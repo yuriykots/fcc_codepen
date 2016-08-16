@@ -1,5 +1,5 @@
 var loadedRecipes = [{
-  name: 'Watermelon saladDDDD',
+  name: 'Watermelon salad',
   ingredients: ['Arugula', 'watermelon', 'feta'],
   id: '1461993924423'
 }, {
@@ -16,24 +16,7 @@ var FormGroup = ReactBootstrap.FormGroup;
 var FormControl = ReactBootstrap.FormControl;
 
 var App = React.createClass({
-/*
-  componentWillMount: function() {
-    //localStorage._yurijkots_recipes = JSON.stringify(loadedRecipes);
-    var memoryRecipes = localStorage._yurijkots_recipes
-    localStorage._yurijkots_recipes ='';
-    localStorage._yurijkots_recipes = loadedRecipes;
-   // loadedRecipes = localStorage._yurijkots_recipes;
-   // if(!memoryRecipes){
-     // memoryRecipes = loadedRecipes
-   // }
 
-    console.log(memoryRecipes);
-    this.setState({
-        data: (loadedRecipes)
-      });
-  },
-
-  */
   componentWillMount: function() {
   //localStorage._yurijkots_recipes = JSON.stringify(loadedRecipes);
   var storedRecipes = localStorage._yurijkots_recipes;
@@ -49,8 +32,34 @@ var App = React.createClass({
       });
     }
   },
+deleteRecipe(obj){
+  console.log(this.state.data);
+  var recipes = this.state.data;
+  console.log("DeleteRecipe")
 
-  updateRecipe(){},
+},
+
+updateRecipe(obj){
+  console.log(this.state.data);
+  var recipes = this.state.data;
+   console.log("next console is recipes before map")
+
+   console.log(recipes)
+    recipes.map(function(recipe){
+        if (recipe.id === obj.id){
+          recipe.name = obj.name;
+          recipe.ingredients = obj.ingredients;
+       };
+      });
+
+  this.setState({
+    data: (recipes)
+  })
+ // localStorage._yurijkots_recipes = JSON.stringify(recipes);
+
+  console.log("next console is recipes after map")
+  console.log(recipes)
+},
 
   addRecipe(obj){
     var recipes = this.state.data;
@@ -63,7 +72,15 @@ var App = React.createClass({
     console.log("recipes" + recipes)
   },
 
-  removeRecipe(){},
+
+wtf(){
+  console.log("fire Delete")
+},
+
+  //wtf(){
+   // console.log("delete recipe is fired")
+ // },
+
   open() {
     this.setState({ showModal: true });
   },
@@ -73,8 +90,8 @@ var App = React.createClass({
     return (
       <div className="container">
           <div className="col-lg-8  col-lg-offset-2 app">
-           <h1> Recipe Box </h1>
-          <RecipeBox data={this.state.data} />
+           <h1> Your Recipes</h1>
+          <RecipeBox deleteRecipe={this.deleteRecipe} updateRecipe={this.updateRecipe}  data={this.state.data} />
           <Example addRecipe={this.addRecipe}/>
         </div>
        </div>
@@ -89,17 +106,67 @@ var RecipeBox = React.createClass({
      <div>
      {this.props.data.map(function(recipe) {
           return <div>
-    <Recipe name={recipe.name} ingredients={recipe.ingredients} id={recipe.id}/>
+    <Recipe name={recipe.name} deleteRecipe={this.props.deleteRecipe} updateRecipe={this.props.updateRecipe}  ingredients={recipe.ingredients} id={recipe.id}/>
             </div>
-        })}
+        }.bind(this))}
      </div>
   )}
 });
 
 
 var Recipe = React.createClass({
-    render() {
-    return (
+
+  getInitialState() {
+    return {showModal: false,
+            ingredients: this.props.ingredients,
+            recipe: this.props.name
+           };
+  },
+
+  close() {
+    this.setState({ showModal: false });
+  },
+
+  open() {
+    this.setState({ showModal: true });
+  },
+
+  handleChange: function(event) {
+    this.setState({recipe: event.target.value});
+  },
+
+  handleChange2: function(event) {
+   this.setState({ingredients: event.target.value});
+  },
+
+  deleteButton: function(){
+    var id = this.props.id;
+    this.props.deleteRecipe(id);
+  },
+
+  handleSave: function(){
+    this.close();
+    var recipeName = this.state.recipe;
+    console.log("ingredients next")
+    console.log(this.state.ingredients)
+    var ingredients = this.state.ingredients
+    console.log("type of ingredients is ... ")
+    if (typeof ingredients !== "object" ){
+      ingredients = this.state.ingredients.split(',');
+    }
+    console.log(typeof ingredients)
+    var id = this.props.id;
+
+        this.props.updateRecipe({
+          name: recipeName,
+          ingredients: ingredients,
+          id: id
+        });
+  },
+
+render() {
+  return (
+   <div>
      <Accordion>
          <Panel header={this.props.name} eventKey="1">
            {this.props.ingredients.map(function(ingredient){
@@ -108,8 +175,33 @@ var Recipe = React.createClass({
            </div>
            })}
            <br></br>
+
+           <Button onClick={this.open}>Edit</Button>
+           <Button onClick={this.deleteButton}> Delete </Button>
+
+
            </Panel>
      </Accordion>
+
+  <Modal show={this.state.showModal} onHide={this.close}>
+    <Modal.Header closeButton>
+        <Modal.Title>Add Recipe</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+        <form>
+            <FormGroup> <FormControl type="text" value={this.state.recipe} onChange={this.handleChange}/></FormGroup>
+            <FormGroup><FormControl componentClass="textarea" value={this.state.ingredients} onChange={this.handleChange2}/></FormGroup>
+        </form>
+    </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.handleSave}>Save</Button>
+            s
+            <Button onClick={this.close}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
+
+
       );
     }
 });

@@ -14,6 +14,7 @@ var Panel = ReactBootstrap.Panel;
 var Button = ReactBootstrap.Button;
 var FormGroup = ReactBootstrap.FormGroup;
 var FormControl = ReactBootstrap.FormControl;
+var ButtonToolbar = ReactBootstrap.ButtonToolbar;
 
 var App = React.createClass({
 
@@ -32,18 +33,11 @@ var App = React.createClass({
       });
     }
   },
-deleteRecipe(obj){
-  console.log(this.state.data);
-  var recipes = this.state.data;
-  console.log("DeleteRecipe")
-
-},
 
 updateRecipe(obj){
   console.log(this.state.data);
   var recipes = this.state.data;
    console.log("next console is recipes before map")
-
    console.log(recipes)
     recipes.map(function(recipe){
         if (recipe.id === obj.id){
@@ -54,11 +48,13 @@ updateRecipe(obj){
 
   this.setState({
     data: (recipes)
-  })
+  });
+  localStorage._yurijkots_recipes = JSON.stringify(recipes);
  // localStorage._yurijkots_recipes = JSON.stringify(recipes);
 
   console.log("next console is recipes after map")
   console.log(recipes)
+
 },
 
   addRecipe(obj){
@@ -72,14 +68,22 @@ updateRecipe(obj){
     console.log("recipes" + recipes)
   },
 
+  deleteRecipe(id){
+    console.log("Id of delete recipe is =  " + id)
+    var recipes = this.state.data;
+    var recipes2 = []
+    recipes.map(function(recipe){
+      if (recipe.id !== id){
+        recipes2.push(recipe);
+      }
+    })
+    console.log(recipes2);
 
-wtf(){
-  console.log("fire Delete")
-},
-
-  //wtf(){
-   // console.log("delete recipe is fired")
- // },
+    this.setState({
+      data: (recipes2)
+    });
+    localStorage._yurijkots_recipes = JSON.stringify(recipes);
+  },
 
   open() {
     this.setState({ showModal: true });
@@ -90,7 +94,7 @@ wtf(){
     return (
       <div className="container">
           <div className="col-lg-8  col-lg-offset-2 app">
-           <h1> Your Recipes</h1>
+           <h2> Your Recipes</h2>
           <RecipeBox deleteRecipe={this.deleteRecipe} updateRecipe={this.updateRecipe}  data={this.state.data} />
           <Example addRecipe={this.addRecipe}/>
         </div>
@@ -140,8 +144,10 @@ var Recipe = React.createClass({
   },
 
   deleteButton: function(){
+    this.close();
     var id = this.props.id;
     this.props.deleteRecipe(id);
+
   },
 
   handleSave: function(){
@@ -167,21 +173,19 @@ var Recipe = React.createClass({
 render() {
   return (
    <div>
-     <Accordion>
-         <Panel header={this.props.name} eventKey="1">
+        <Panel class="recipe-panel" collapsible header={this.props.name}>
            {this.props.ingredients.map(function(ingredient){
            return <div>
              {ingredient}
            </div>
            })}
            <br></br>
+           <ButtonToolbar>
+               <Button onClick={this.open}>Edit</Button>
+               <Button onClick={this.deleteButton}> Delete </Button>
+           </ButtonToolbar>
+        </Panel>
 
-           <Button onClick={this.open}>Edit</Button>
-           <Button onClick={this.deleteButton}> Delete </Button>
-
-
-           </Panel>
-     </Accordion>
 
   <Modal show={this.state.showModal} onHide={this.close}>
     <Modal.Header closeButton>
@@ -195,7 +199,7 @@ render() {
     </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.handleSave}>Save</Button>
-            s
+
             <Button onClick={this.close}>Close</Button>
           </Modal.Footer>
         </Modal>

@@ -1,5 +1,3 @@
-//330px
-//550px
 //Solution 1
 var cellsArray = [];
 for(var i=0; i<1500; i++){
@@ -12,16 +10,12 @@ for(var i=0; i<1500; i++){
 
 var length=50;
 var heigth=30;
-
 //Solution 2
 var cellsArray2 = new Array(1500).fill(0);
-
 
 var CellD = React.createClass({
   handleClick: function() {
    // console.log("cell is pressed");
-     // console.log(this.props.index);
-   //   console.log("cell is pressed");
       this.props.updateArrayD(this.props.index)
   },
 
@@ -33,9 +27,8 @@ var CellD = React.createClass({
   });
 
 var CellA = React.createClass({
-
   handleClick: function() {
-    //  console.log("cell is pressed")
+    ///  console.log("cell is pressed")
       this.props.updateArrayA(this.props.index)
   },
 
@@ -47,14 +40,12 @@ var CellA = React.createClass({
   });
 
 var App = React.createClass({
-
   getInitialState: function(){
       return {
         cells: cellsArray,
         ecells: emptyArray,
       }
   },
-
 
 
 resetFunction: function(index) {
@@ -84,33 +75,31 @@ const emptyA = new Array(1500).fill(0);
 
    },
 
-
-  createGenerations: function(){
-     var generateArray = this.state.cells;
-     console.log("before map")
-     console.log("generateArray  is "  + generateArray)
-     var newCellsArray = new Array(1500).fill(0);
-     console.log("newCellArray  is "  + newCellsArray)
+createGenerations: function(){
+  var generateArray = this.state.cells;
+  console.log("before map")
+  console.log("generateArray  is "  + generateArray)
+  var newCellsArray = new Array(1500).fill(0);
+  console.log("newCellArray  is "  + newCellsArray)
      generateArray.map(function(cell, index){
           var sum = generateArray[index-length-1]+generateArray[index-length]+generateArray[index-length+1]+generateArray[index-1]+generateArray[index+1]+generateArray[index+length-1]+generateArray[index+length]+generateArray[index+length+1];
 
-///first line
+      ///first line
 if(index > 0  & index < length-2 ){
          var sum = generateArray[length*(heigth-1)+index-1]+generateArray[length*(heigth-1)+index]+generateArray[length*(heigth-1)+index+1]+generateArray[index-1]+generateArray[index+1]+generateArray[index+length-1]+generateArray[index+length]+generateArray[index+length+1];
      }
-//last line
+      ///last line
  if(index > length*(heigth-1)  & index < length*heigth-2 ){
          var sum = generateArray[index-length-1]+generateArray[index-length]+generateArray[index-length+1]+generateArray[index-1]+generateArray[index+1]+ generateArray[index-length*(heigth-1)-1]+ generateArray[index-length*(heigth-1)]+ generateArray[index-length*(heigth-1)+1]+generateArray[index+length-1]+generateArray[index+length]+generateArray[index+length+1];
      }
 
-
-        ///new cell is born
+   ///new cell is born
          if(cell === 0 & sum === 3) {
             console.log("assign value 1  for index  " + index)
             newCellsArray[index]=1;
          }
 
-       //cell is alive
+    ///cell is alive
          if(cell === 1 ){
            //dies from underpopulation
            if(sum < 2) {
@@ -125,20 +114,12 @@ if(index > 0  & index < length-2 ){
              newCellsArray[index]=0;
            }
         }
-
-
 })
-
-
-
-
 
      console.log("cellsArray " + generateArray)
      console.log("newCellsArray"  + newCellsArray)
      this.setState({cells: newCellsArray});
    },
-
-
 
      render: function() {
     return (

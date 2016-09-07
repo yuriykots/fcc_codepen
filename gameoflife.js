@@ -93,6 +93,8 @@ if(index > 0  & index < length-2 ){
          var sum = generateArray[index-length-1]+generateArray[index-length]+generateArray[index-length+1]+generateArray[index-1]+generateArray[index+1]+ generateArray[index-length*(heigth-1)-1]+ generateArray[index-length*(heigth-1)]+ generateArray[index-length*(heigth-1)+1]+generateArray[index+length-1]+generateArray[index+length]+generateArray[index+length+1];
      }
 
+/// fix first and last line
+
    ///new cell is born
          if(cell === 0 & sum === 3) {
             console.log("assign value 1  for index  " + index)

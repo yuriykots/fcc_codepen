@@ -35,7 +35,7 @@ const values = {
 
 class App extends React.Component {
 
-  render() {
+render() {
 		return (
            <div>
                 <h1> My speed is ... {this.props.data.speeds.slow.name}</h1>
@@ -46,7 +46,44 @@ class App extends React.Component {
 }
 
 class GameBoard extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      running: false,
+      generations: 0,
+      speed:  "medium",
+      board: {
+        size: "medium",
+        height:  props.gridSize.medium.heigh,
+        width: props.gridSize.medium.width
+      }
+    };
+  }
 
+generateGrid(board, type) {
+  let height = board.height,
+			width = board.width,
+			grid = [];
+
+	for (let i=0; i<height; i++) {
+			grid.push({
+				id: "row_" + i,
+				cells: []
+			});
+
+   for (let p=0; p<width; p++) {
+				let status = type === "random" ? this.randomSetUp() : "dead";
+				let cell = {
+					id: p + "," + i,
+					pos: [p, i],
+					neighbours: [[p-1, i-1], [p, i-1], [p+1, i-1], [p-1, i], [p+1, i], [p-1, i+1], [p, i+1], [p+1, i+1]],
+					status: status
+				}
+				grid[i].cells.push(cell);
+			}
+		}
+		return grid;
+	}
 
 
   render() {

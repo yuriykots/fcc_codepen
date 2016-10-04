@@ -71,7 +71,7 @@ class Board extends React.Component {
   generateGrid() {
    let height = 10,
 		   width = 10,
-		   grid = [];
+		   grid = [];359259060547162
 
 	for (let r=0; r<height; r++) {
 			grid.push({
@@ -117,9 +117,23 @@ class Board extends React.Component {
 
   render() {
     console.log(this.state.board.grid)
+    let grid = this.state.board.grid.map(function(row) {
+      return <h1> hello row</h1>
+    });
+
     return (
-    <h1> Board is in this element. Yahho </h1>
+    <div className = "Box">
+    {grid}
+    </div>
     );
+  }
+}
+
+class Row extends React.Component {
+  render(){
+    return (
+    <h1> Jew Row </h1>
+    )
   }
 }
 

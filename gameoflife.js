@@ -32,20 +32,19 @@ const values = {
   }
 }
 
-
 class App extends React.Component {
 
 render() {
 		return (
            <div>
                 <h1> My speed is ... {this.props.data.speeds.slow.name}</h1>
-                <GameBoard gridSize={this.props.data.gridSize} speeds={this.props.data.speeds} />
+                <Board gridSize={this.props.data.gridSize} speeds={this.props.data.speeds} />
           </div>
 		);
 	}
 }
 
-class GameBoard extends React.Component {
+class Board extends React.Component {
   constructor(props){
     super(props);
     this.state = {
@@ -60,33 +59,64 @@ class GameBoard extends React.Component {
     };
   }
 
-generateGrid(board, type) {
-  let height = board.height,
-			width = board.width,
-			grid = [];
+ componentWillMount(){
+    let board = this.state.board;
+    board.grid = this.generateGrid();
+    this.setState ({
+      board: board
+    });
+  }
 
-	for (let i=0; i<height; i++) {
+
+  generateGrid() {
+   let height = 10,
+		   width = 10,
+		   grid = [];
+
+	for (let r=0; r<height; r++) {
 			grid.push({
-				id: "row_" + i,
+				id: "row_" + r,
 				cells: []
 			});
 
    for (let p=0; p<width; p++) {
-				let status = type === "random" ? this.randomSetUp() : "dead";
-				let cell = {
-					id: p + "," + i,
-					pos: [p, i],
-					neighbours: [[p-1, i-1], [p, i-1], [p+1, i-1], [p-1, i], [p+1, i], [p-1, i+1], [p, i+1], [p+1, i+1]],
-					status: status
-				}
-				grid[i].cells.push(cell);
+
+   let  neigbours = [[p-1, r-1], [p, r-1], [p+1, r-1], [p-1, r], [p+1, r], [p-1, r+1], [p, r+1], [p+1, r+1]];
+   let wrappedNeigbours = neigbours.map(function(neigbour) {
+                 let r =  neigbour[1];
+                 let p = neigbour[0];
+
+                 if (r < 0) {
+                   r = height-1
+                 } else if ( r > height-1){
+                   r = 0
+                 };
+
+                  if(p < 0){
+                    p = width-1
+                  } else if ( p > width-1){
+                    p = 0
+                  }
+
+                   return [p,r]
+              });
+
+
+	let cell = {
+		id: p + "," + r,
+		pos: [p, r],
+		neighbours: wrappedNeigbours,
+		status: "dead"
+		}
+			grid[r].cells.push(cell);
 			}
 		}
-		return grid;
+
+  return grid;
 	}
 
-
   render() {
+    console.log(this.state.board.grid)
     return (
     <h1> Board is in this element. Yahho </h1>
     );

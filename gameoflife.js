@@ -37,7 +37,7 @@ class App extends React.Component {
 render() {
 		return (
            <div>
-                <h1> My speed is ... {this.props.data.speeds.slow.name}</h1>
+               <h1> Game of Thrones.  {this.props.data.speeds.slow.name}</h1>
                 <Board gridSize={this.props.data.gridSize} speeds={this.props.data.speeds} />
           </div>
 		);
@@ -69,9 +69,9 @@ class Board extends React.Component {
 
 
   generateGrid() {
-   let height = 10,
-		   width = 10,
-		   grid = [];359259060547162
+   let height = 30,
+		   width = 50,
+		   grid = [];
 
 	for (let r=0; r<height; r++) {
 			grid.push({
@@ -113,12 +113,14 @@ class Board extends React.Component {
 		}
 
   return grid;
+    conosole.log("next is grid");
+    console.log(grid)
 	}
 
   render() {
     console.log(this.state.board.grid)
     let grid = this.state.board.grid.map(function(row) {
-      return <h1> hello row</h1>
+      return <Row cells={row.cells} key={row.id}/>
     });
 
     return (
@@ -131,11 +133,27 @@ class Board extends React.Component {
 
 class Row extends React.Component {
   render(){
+    let cells = this.props.cells.map(function(cell){
+      return <Cell/>
+    })
+    //console.log("cells next")
+    //console.log(cells)
     return (
-    <h1> Jew Row </h1>
+    <div className="Row">
+        {cells}
+    </div>
     )
   }
 }
 
+function Cell (props) {
+    return (
+      <div className="Cell"> </div>
+    )
+}
+
 
 ReactDOM.render(<App data={values}/>, document.getElementById('app'));
+
+
+// function that change cell status

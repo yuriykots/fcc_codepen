@@ -67,6 +67,16 @@ class Board extends React.Component {
     });
   }
 
+  cellClick(event){
+		const position = event.split(","),
+					x = parseInt(position[0]),
+					y = parseInt(position[1]);
+		let board = {...this.state.board};
+		board.grid[y].cells[x].status = "alive";
+		this.setState({board: board});
+	}
+
+
 
   generateGrid() {
    let height = 30,

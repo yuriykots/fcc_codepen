@@ -59,8 +59,6 @@ class Board extends React.Component {
     };
   }
 
-
-
  componentWillMount(){
     let board = this.state.board;
     board.grid = this.generateGrid();
@@ -70,69 +68,70 @@ class Board extends React.Component {
   }
 
   cellClick(event){
-    console.log("This should be click function");
-    console.log(event);
-   // console.log(event);
-	//	var position = event.split(","),
-		//			x = parseInt(position[0]),
-	//				y = parseInt(position[1]);
-	//	let board = {...this.state.board};
-//		board.grid[y].cells[x].status = "alive";
-	//	this.setState({board: board});
+		const position = event.split(","),
+					x = parseInt(position[0]),
+					y = parseInt(position[1]);
+		let board = {...this.state.board};
+		board.grid[y].cells[x].status = "alive";
+		this.setState({board: board});
 	}
 
 
-
+ //  <div className="Cell" onClick={() => props.cellClick(props.id)}> </div>
   generateGrid() {
-           let height = 30,
-               width = 50,
-               grid = [];
+   let height = 30,
+		   width = 50,
+		   grid = [];
 
-          for (let r=0; r<height; r++) {
-              grid.push({
-                id: "row_" + r,
-                cells: []
+	for (let r=0; r<height; r++) {
+			grid.push({
+				id: "row_" + r,
+				cells: []
+			});
+
+   for (let p=0; p<width; p++) {
+
+   let  neigbours = [[p-1, r-1], [p, r-1], [p+1, r-1], [p-1, r], [p+1, r], [p-1, r+1], [p, r+1], [p+1, r+1]];
+   let wrappedNeigbours = neigbours.map(function(neigbour) {
+                 let r =  neigbour[1];
+                 let p = neigbour[0];
+
+                 if (r < 0) {
+                   r = height-1
+                 } else if ( r > height-1){
+                   r = 0
+                 };
+
+                  if(p < 0){
+                    p = width-1
+                  } else if ( p > width-1){
+                    p = 0
+                  }
+
+                   return [p,r]
               });
 
-           for (let p=0; p<width; p++) {
 
-           let  neigbours = [[p-1, r-1], [p, r-1], [p+1, r-1], [p-1, r], [p+1, r], [p-1, r+1], [p, r+1], [p+1, r+1]];
-           let wrappedNeigbours = neigbours.map(function(neigbour) {
-                         let r =  neigbour[1];
-                         let p = neigbour[0];
+	let cell = {
+		id: p + "," + r,
+		pos: [p, r],
+		neighbours: wrappedNeigbours,
+		status: "dead"
+		}
+			grid[r].cells.push(cell);
+			}
+		}
 
-                         if (r < 0) {
-                           r = height-1
-                         } else if ( r > height-1){
-                           r = 0
-                         };
-
-                          if(p < 0){
-                            p = width-1
-                          } else if ( p > width-1){
-                            p = 0
-                          }
-                           return [p,r]
-                      });
-
-          let cell = {
-            id: p + "," + r,
-            pos: [p, r],
-            neighbours: wrappedNeigbours,
-            status: "dead"
-            }
-              grid[r].cells.push(cell);
-              }
-            }
-        return grid;
-        }
-
+  return grid;
+    conosole.log("next is grid");
+    console.log(grid)
+	}
 
   render() {
     console.log(this.state.board.grid)
     let grid = this.state.board.grid.map(function(row) {
-      return <Row cells={row.cells} key={row.id} cellClick={this.cellClick}/>
-    }.bind(this));
+      return <Row cells={row.cells} key={row.id}/>
+    });
 
     return (
     <div className = "Box">
@@ -140,19 +139,13 @@ class Board extends React.Component {
     </div>
     );
   }
-
-
-
-
-
-
 }
 
 class Row extends React.Component {
   render(){
     let cells = this.props.cells.map(function(cell){
-      return <Cell key={cell.id} id={cell.id} status={cell.status} cellClick={this.props.cellClick}/>
-    }.bind(this))
+      return <Cell/>
+    })
     //console.log("cells next")
     //console.log(cells)
     return (
@@ -163,16 +156,9 @@ class Row extends React.Component {
   }
 }
 
-
-
 function Cell (props) {
-
-  return (
-     // 1. bind(this)
-    //  <div className="Cell" onClick={props.cellClick.bind(this, props.id)}> </div>
-    // 2. Arrow function
-      <div className="Cell" onClick={() => props.cellClick(props.id)}> </div>
-
+    return (
+      <div className="Cell" onClick={props.cellCLick}> </div>
     )
 }
 

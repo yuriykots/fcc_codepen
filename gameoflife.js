@@ -33,12 +33,13 @@ const values = {
 }
 
 class App extends React.Component {
-
+//<ControlPannel/>
 render() {
 		return (
            <div>
                <h1> Game of Thrones.  {this.props.data.speeds.slow.name}</h1>
                 <Board gridSize={this.props.data.gridSize} speeds={this.props.data.speeds} />
+
           </div>
 		);
 	}
@@ -54,36 +55,13 @@ class Board extends React.Component {
       speed:  "medium",
       board: {
         size: "medium",
-        height:  props.gridSize.medium.heigh,
+        height:  props.gridSize.medium.height,
         width: props.gridSize.medium.width
       }
     };
   };
 
-  cellClick(){
-    console.log("state");
-    console.log(this.state);
-     console.log("this");
-    console.log(this);
-  //  var posArray = event.split(","),
-   // x = parseInt(posArray[0]),
-   // y = parseInt(posArray[1]);
-   // console.log(typeof x );
-    //let grid = this.state.board;
-   // console.log(grid);
-
-   // console.log(event);
-	//	var position = event.split(","),
-		//			x = parseInt(position[0]),
-	//				y = parseInt(position[1]);
-	//	let board = {...this.state.board};
-//		board.grid[y].cells[x].status = "alive";
-	//	this.setState({board: board});
-	};
-
-
-
- componentWillMount(){
+componentWillMount(){
     let board = this.state.board;
     board.grid = this.generateGrid();
     this.setState ({
@@ -91,35 +69,26 @@ class Board extends React.Component {
     });
   };
 
-  testfunction(){
-    console.log("test function")
-    console.log(this)
-  };
+ cellClick(event){
+					var x = parseInt(event[0]),
+					y = parseInt(event[1]);
+           console.log(y);
+	  let board2 = this.state.board;
+    console.log(board2);
+    if (board2.grid[y].cells[x].status === "dead"){
+      board2.grid[y].cells[x].status = "alive";
+    }
+    else{
+      board2.grid[y].cells[x].status = "dead"
+    }
 
+    console.log(board2.grid[y].cells[x]);
+	  this.setState({
+      board: board2
+    });
+	};
 
-
-//  cellClick(){
- //   console.log("click")
-	//	console.log(this)
-  //  var posArray = event.split(","),
-   // x = parseInt(posArray[0]),
-   // y = parseInt(posArray[1]);
-   // console.log(typeof x );
-    //let grid = this.state.board;
-   // console.log(grid);
-
-   // console.log(event);
-	//	var position = event.split(","),
-		//			x = parseInt(position[0]),
-	//				y = parseInt(position[1]);
-	//	let board = {...this.state.board};
-//		board.grid[y].cells[x].status = "alive";
-	//	this.setState({board: board});
-//	}
-
-
-
-  generateGrid() {
+generateGrid() {
            let height = 30,
                width = 50,
                grid = [];
@@ -169,55 +138,28 @@ class Board extends React.Component {
         {this.state.board.grid.map((row) => {
       return <Row cells={row.cells} key={row.id} cellClick={this.cellClick}/>
       })}
+      <ControlPannel/>
       </div>
   );
   }
-
- // render() {
-  //  console.log(this.state.board.grid)
-   // let grid = this.state.board.grid.map((row) => {
-
-   //   return <Row cells={row.cells} key={row.id} cellClick={this.cellClick}/>
-   // });
-
-
-//    return (
- //   <div className = "Box" >
-  //  {grid}
-   // </div>
-    //);
- // }
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
 
 class Row extends React.Component {
   render(){
     return (
       <div className="Row">
         {this.props.cells.map((cell) => {
-      return <Cell key={cell.id} test={"test"} id={cell.id} status={cell.status} cellClick={this.props.cellClick}/>
+      return <Cell key={cell.id} test={"test"} pos={cell.pos} status={cell.status} cellClick={this.props.cellClick}/>
     })}
-
       </div>
     )
-  /*
-    let cells = this.props.cells.map((cell) => {
-      return <Cell key={cell.id} test={"test"} id={cell.id} status={cell.status} cellClick={this.props.cellClick}/>
-    })
-    //console.log("cells next")
-    //console.log(cells)
-    return (
-    <div className="Row">
-        {cells}
-    </div>
-
-    )
-    */
   }
 }
 
@@ -226,19 +168,32 @@ class Row extends React.Component {
 //function Cell (props) {
 class Cell extends React.Component {
      render(){
+  const className = "Cell";
+  const testName = "Cell" + this.props.status;
+  //console.log(testName);
   return (
      // 1. bind(this)
-    //  <div className="Cell" onClick={props.cellClick.bind(this, props.id)}> </div>
+    //  <div className="Cell" onClick={props.cellClick.bind(this, props.pos)}> </div>
     // 2. Arrow function
-      <div className="Cell" test={"test2"} onClick={() => this.props.cellClick(this.props.id)}> </div>
+      <div className={testName} test={"test2"} onClick={() => this.props.cellClick(this.props.pos)}> </div>
    //<div className="Cell" test={"test2"} onClick={this.props.cellClick}> </div>
-
+      
     );
      }
 }
 
+class ControlPannel extends React.Component {
+  render(){
+    return(
+    <div className = "ControlPanel">
+ <button className ="Button"> Start </button>
+ <button className ="Button" onClick={console.log("hello")}> Reset </button>
+
+    </div>
+    );
+  }
+}
+
+
 
 ReactDOM.render(<App data={values}/>, document.getElementById('app'));
-
-
-// function that change cell status

@@ -88,14 +88,16 @@ componentWillMount(){
 
    for (var r=0; r< height; r++ ){
       for (var c=0; c<width; c++){
-         for(var n=0; n<8; n++){
+        //    console.log("hello");
+      // console.log(board.grid[r].cells[c]);
+        for(var n=0; n<8; n++){
+          if(board.grid[r].cells[c].status === "alive"){
              var neighbourID = board.grid[r].cells[c].neighbours[n];
-             var row = parseInt(neighbourID[1]);
-             var cell = parseInt(neighbourID[0]);
-             console.log("row  " + row  + "  cell  " + cell);
-           if (board.grid[row].cells[cell].status = "alive"){
-            console.log("we found a neigbour that is alive");
-           }
+             var row = neighbourID[1];
+             var cell = neighbourID[0];
+            console.log("This cell has this neigbours");
+             console.log(board.grid[row].cells[cell]);
+          }
 
 
         }

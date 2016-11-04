@@ -49,14 +49,16 @@ class Board extends React.Component {
   constructor(props){
     super(props);
     this.cellClick = this.cellClick.bind(this);
+    this.clearBoard = this.clearBoard.bind(this);
+    this.createGenerations = this.createGenerations.bind(this);
     this.state = {
       running: false,
       generations: 0,
-      speed:  "medium",
+      speed:  "small",
       board: {
-        size: "medium",
-        height:  props.gridSize.medium.height,
-        width: props.gridSize.medium.width
+        size: "small",
+        height:  props.gridSize.small.height,
+        width: props.gridSize.small.width
       }
     };
   };
@@ -64,12 +66,47 @@ class Board extends React.Component {
 componentWillMount(){
     let board = this.state.board;
     board.grid = this.generateGrid();
+    //this.createGenerations();
     this.setState ({
       board: board
     });
   };
 
- cellClick(event){
+ clearBoard(){
+ let board = this.state.board;
+ board.grid = this.generateGrid();
+   this.setState({
+     board: board
+   });
+ };
+
+ createGenerations(){
+   var height = this.state.board.height;
+   var width = this.state.board.width;
+   console.log(width + "  create generation " + height);
+   let board = this.state.board;
+
+   for (var r=0; r< height; r++ ){
+      for (var c=0; c<width; c++){
+         for(var n=0; n<8; n++){
+             var neighbourID = board.grid[r].cells[c].neighbours[n];
+             var row = parseInt(neighbourID[1]);
+             var cell = parseInt(neighbourID[0]);
+             console.log("row  " + row  + "  cell  " + cell);
+           if (board.grid[row].cells[cell].status = "alive"){
+            console.log("we found a neigbour that is alive");
+           }
+
+
+        }
+     }
+   }
+ };
+
+
+
+
+      cellClick(event){
 					var x = parseInt(event[0]),
 					y = parseInt(event[1]);
            console.log(y);
@@ -136,9 +173,9 @@ generateGrid() {
     return (
       <div className = "Box">
         {this.state.board.grid.map((row) => {
-      return <Row cells={row.cells} key={row.id} cellClick={this.cellClick}/>
+      return <Row cells={row.cells} key={row.id} cellClick={this.cellClick} />
       })}
-      <ControlPannel/>
+      <ControlPannel clearBoard={this.clearBoard} createGenerations={this.createGenerations}/>
       </div>
   );
   }
@@ -177,7 +214,7 @@ class Cell extends React.Component {
     // 2. Arrow function
       <div className={testName} test={"test2"} onClick={() => this.props.cellClick(this.props.pos)}> </div>
    //<div className="Cell" test={"test2"} onClick={this.props.cellClick}> </div>
-      
+
     );
      }
 }
@@ -186,8 +223,8 @@ class ControlPannel extends React.Component {
   render(){
     return(
     <div className = "ControlPanel">
- <button className ="Button"> Start </button>
- <button className ="Button" onClick={console.log("hello")}> Reset </button>
+ <button className ="Button" onClick={this.props.createGenerations}> Start </button>
+ <button className ="Button" onClick={this.props.clearBoard}> Reset </button>
 
     </div>
     );

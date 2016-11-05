@@ -51,6 +51,7 @@ class Board extends React.Component {
     this.cellClick = this.cellClick.bind(this);
     this.clearBoard = this.clearBoard.bind(this);
     this.createGenerations = this.createGenerations.bind(this);
+    this.generateGrid = this.generateGrid.bind(this);
     this.state = {
       running: false,
       generations: 0,
@@ -81,28 +82,47 @@ componentWillMount(){
  };
 
  createGenerations(){
-   var height = this.state.board.height;
-   var width = this.state.board.width;
-   console.log(width + "  create generation " + height);
-   let board = this.state.board;
+           var height = this.state.board.height;
+           var width = this.state.board.width;
+           let board = this.state.board;
+        //create new grid to avoid mutability in js
+           let newgrid = this.generateGrid();
 
-   for (var r=0; r< height; r++ ){
-      for (var c=0; c<width; c++){
-        //    console.log("hello");
-      // console.log(board.grid[r].cells[c]);
-        for(var n=0; n<8; n++){
-          if(board.grid[r].cells[c].status === "alive"){
-             var neighbourID = board.grid[r].cells[c].neighbours[n];
-             var row = neighbourID[1];
-             var cell = neighbourID[0];
-            console.log("This cell has this neigbours");
-             console.log(board.grid[row].cells[cell]);
-          }
+        //check all the cells
+           for (var r=0; r< height; r++ ){
+              for (var c=0; c<width; c++){
+                var count = 0;
 
+        //check status of all neigbours;
+                for(var n=0; n<8; n++){
+                     var neighbourID = board.grid[r].cells[c].neighbours[n];
+                     var row = neighbourID[1];
+                     var cell = neighbourID[0];
 
-        }
-     }
-   }
+                    if(board.grid[row].cells[cell].status === "alive"){
+                    count++;
+                    }
+                }
+
+        //update status of the cells based on on amount of neigbours
+                var status = board.grid[r].cells[c].status;
+                    if (status === "dead" && count === 3) {
+                      status = "alive";
+                    } else if ((status === "alive") && (count === 3 || count === 2)) {
+                      status = "alive";
+                    } else {
+                     status = "dead";
+                    }
+                newgrid[r].cells[c].status = status;
+              }
+           }
+         //update grid and state.
+           board.grid = newgrid;
+
+           this.setState({
+             board: board
+
+           });
  };
 
 

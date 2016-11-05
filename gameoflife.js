@@ -50,9 +50,11 @@ class Board extends React.Component {
     super(props);
     this.cellClick = this.cellClick.bind(this);
     this.clearBoard = this.clearBoard.bind(this);
-    this.createGenerations = this.createGenerations.bind(this);
+    //this.createGenerations = this.createGenerations.bind(this);
     this.changeSizeTo = this.changeSizeTo.bind(this);
     this.changeSizeToL = this.changeSizeToL.bind(this);
+    this.startGenerations = this.startGenerations.bind(this);
+    this.pauseGenerations = this.pauseGenerations.bind(this);
   //  this.generateGrid = this.generateGrid.bind(this);
     this.state = {
       running: false,
@@ -105,16 +107,59 @@ componentWillMount(){
    console.log("clear function is fired")
  let board = {...this.state.board};
  board.grid = this.generateGrid(this.state.board.height, this.state.board.width);
+ let running = false;
    this.setState({
-     board: board
+     board: board,
+     running: running
    });
  };
 
+
+ pauseGenerations(){
+   console.log("pause fired")
+   if(this.state.running === true){
+     let running = false;
+     this.setState({
+       running: running
+     })
+   }
+ }
+
+ startGenerations(){
+   console.log("start fired")
+   if(this.state.running === false){
+     let running = true;
+     setTimeout(function(){this.createOneGeneration()}.bind(this), 2000);
+     this.setState({
+       running: running
+     })
+   } else {
+     //nothing
+   }
+ }
+
+/*
  createGenerations(){
+  if (this.state.running === false) {
+  let running = true;
+  setTimeout(function() {this.createGenerations()}.bind(this), 2000);
+  this.setState({
+    running: running
+  });
+  } else {
+  this.createOneGeneration();
+  setTimeout(function() {this.createGenerations()}.bind(this), 2000);
+  }
+
+
+ }
+ */
+createOneGeneration(){
+  if (this.state.running === true) {
            var height = this.state.board.height;
            var width = this.state.board.width;
            let board = this.state.board;
-        //create new grid to avoid mutability in js
+           //create new grid to avoid mutability in js
            let newgrid = this.generateGrid(height, width);
 
         //check all the cells
@@ -147,12 +192,16 @@ componentWillMount(){
            }
          //update grid and state.
            board.grid = newgrid;
-
+          // setTimeout(createGenerations(), 3000);
            this.setState({
              board: board
-
            });
- };
+    setTimeout(function(){this.createOneGeneration()}.bind(this), 2000);
+
+  } else {
+    //nothing
+  }
+  };
 
 
 
@@ -175,6 +224,8 @@ componentWillMount(){
       board: board2
     });
 	};
+
+
 
 generateGrid(height, width) {
           let   grid = [];
@@ -224,7 +275,7 @@ generateGrid(height, width) {
         {this.state.board.grid.map((row) => {
       return <Row cells={row.cells} key={row.id} cellClick={this.cellClick} />
       })}
-      <ControlPannel clearBoard={this.clearBoard} createGenerations={this.createGenerations} changeSizeTo={this.changeSizeTo} changeSizeToL={this.changeSizeToL}/>
+      <ControlPannel clearBoard={this.clearBoard} startGenerations={this.startGenerations} changeSizeTo={this.changeSizeTo} changeSizeToL={this.changeSizeToL} pauseGenerations={this.pauseGenerations}/>
       </div>
   );
   }
@@ -272,11 +323,15 @@ class ControlPannel extends React.Component {
   render(){
     return(
 <div className = "ControlPanel">
-<button className = "Button" onClick={this.props.createGenerations}> Start </button>
-<button className = "Button" onClick={this.props.clearBoard}> Reset </button> 
-<button className = "Button" onClick={() =>this.props.changeSizeTo(30,50)}>   Size30x50 </button>
-<button className = "Button" onClick={() =>this.props.changeSizeTo(50,70)}>   Size 50x70 </button>
-<button className = "Button" onClick={() =>this.props.changeSizeTo(80,100)}>  Size 80x100 </button>
+<button className = "Button" onClick={this.props.startGenerations}> Start </button>
+<button className = "Button" onClick={this.props.pauseGenerations}> Pause </button>
+<button className = "Button" onClick={this.props.clearBoard}> Reset </button>
+<button className = "Button" onClick={() =>this.props.changeSizeTo(30,50)}>30x50</button>
+<button className = "Button" onClick={() =>this.props.changeSizeTo(50,70)}>50x70</button>
+<button className = "Button" onClick={() =>this.props.changeSizeTo(80,100)}>80x100</button>
+
+
+
 </div>
     );
   }

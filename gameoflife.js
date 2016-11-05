@@ -51,31 +51,60 @@ class Board extends React.Component {
     this.cellClick = this.cellClick.bind(this);
     this.clearBoard = this.clearBoard.bind(this);
     this.createGenerations = this.createGenerations.bind(this);
-    this.generateGrid = this.generateGrid.bind(this);
+    this.changeSizeTo = this.changeSizeTo.bind(this);
+    this.changeSizeToL = this.changeSizeToL.bind(this);
+  //  this.generateGrid = this.generateGrid.bind(this);
     this.state = {
       running: false,
       generations: 0,
       speed:  "small",
       board: {
         size: "small",
-        height:  props.gridSize.small.height,
-        width: props.gridSize.small.width
+        height:  30,
+        width: 50,
       }
     };
   };
 
 componentWillMount(){
     let board = this.state.board;
-    board.grid = this.generateGrid();
+    board.grid = this.generateGrid(30, 50);
     //this.createGenerations();
     this.setState ({
       board: board
     });
   };
 
+ changeSizeTo(h, w){
+   console.log("changeSizeToM fired")
+      let height = h;
+      let width = w;
+      let board = this.state.board;
+      board.height = height;
+      board.width = width;
+      board.grid = this.generateGrid(height,width);
+      this.setState ({
+        board: board
+      });
+ }
+
+   changeSizeToL(){
+   console.log("changeSizeToM fired")
+      let height = 80;
+      let width = 100;
+      let board = this.state.board;
+      board.height = height;
+      board.width = width;
+      board.grid = this.generateGrid(height,width);
+      this.setState ({
+        board: board
+      });
+ }
+
  clearBoard(){
- let board = this.state.board;
- board.grid = this.generateGrid();
+   console.log("clear function is fired")
+ let board = {...this.state.board};
+ board.grid = this.generateGrid(this.state.board.height, this.state.board.width);
    this.setState({
      board: board
    });
@@ -86,7 +115,7 @@ componentWillMount(){
            var width = this.state.board.width;
            let board = this.state.board;
         //create new grid to avoid mutability in js
-           let newgrid = this.generateGrid();
+           let newgrid = this.generateGrid(height, width);
 
         //check all the cells
            for (var r=0; r< height; r++ ){
@@ -147,10 +176,8 @@ componentWillMount(){
     });
 	};
 
-generateGrid() {
-           let height = 30,
-               width = 50,
-               grid = [];
+generateGrid(height, width) {
+          let   grid = [];
 
           for (let r=0; r<height; r++) {
               grid.push({
@@ -197,7 +224,7 @@ generateGrid() {
         {this.state.board.grid.map((row) => {
       return <Row cells={row.cells} key={row.id} cellClick={this.cellClick} />
       })}
-      <ControlPannel clearBoard={this.clearBoard} createGenerations={this.createGenerations}/>
+      <ControlPannel clearBoard={this.clearBoard} createGenerations={this.createGenerations} changeSizeTo={this.changeSizeTo} changeSizeToL={this.changeSizeToL}/>
       </div>
   );
   }
@@ -244,11 +271,13 @@ class Cell extends React.Component {
 class ControlPannel extends React.Component {
   render(){
     return(
-    <div className = "ControlPanel">
- <button className ="Button" onClick={this.props.createGenerations}> Start </button>
- <button className ="Button" onClick={this.props.clearBoard}> Reset </button>
-
-    </div>
+<div className = "ControlPanel">
+<button className = "Button" onClick={this.props.createGenerations}> Start </button>
+<button className = "Button" onClick={this.props.clearBoard}> Reset </button> 
+<button className = "Button" onClick={() =>this.props.changeSizeTo(30,50)}>   Size30x50 </button>
+<button className = "Button" onClick={() =>this.props.changeSizeTo(50,70)}>   Size 50x70 </button>
+<button className = "Button" onClick={() =>this.props.changeSizeTo(80,100)}>  Size 80x100 </button>
+</div>
     );
   }
 }

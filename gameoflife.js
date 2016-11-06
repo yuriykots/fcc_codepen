@@ -52,14 +52,14 @@ class Board extends React.Component {
     this.clearBoard = this.clearBoard.bind(this);
     //this.createGenerations = this.createGenerations.bind(this);
     this.changeSizeTo = this.changeSizeTo.bind(this);
-    this.changeSizeToL = this.changeSizeToL.bind(this);
+    this.changeSpeedTo = this.changeSpeedTo.bind(this);
     this.startGenerations = this.startGenerations.bind(this);
     this.pauseGenerations = this.pauseGenerations.bind(this);
   //  this.generateGrid = this.generateGrid.bind(this);
     this.state = {
       running: false,
       generations: 0,
-      speed:  "small",
+      speed:  3000,
       board: {
         size: "small",
         height:  30,
@@ -90,18 +90,18 @@ componentWillMount(){
       });
  }
 
-   changeSizeToL(){
-   console.log("changeSizeToM fired")
-      let height = 80;
-      let width = 100;
-      let board = this.state.board;
-      board.height = height;
-      board.width = width;
-      board.grid = this.generateGrid(height,width);
-      this.setState ({
-        board: board
-      });
+ changeSpeedTo(s){
+   console.log("spped function is fires ")
+   console.log(this.state.speed);
+   let speed = s;
+   //let state = this.state;
+   //state.speed = speed;
+   this.setState({
+     speed: speed
+   })
+
  }
+
 
  clearBoard(){
    console.log("clear function is fired")
@@ -129,7 +129,8 @@ componentWillMount(){
    console.log("start fired")
    if(this.state.running === false){
      let running = true;
-     setTimeout(function(){this.createOneGeneration()}.bind(this), 2000);
+
+     setTimeout(function(){this.createOneGeneration()}.bind(this), this.state.speed);
      this.setState({
        running: running
      })
@@ -196,7 +197,7 @@ createOneGeneration(){
            this.setState({
              board: board
            });
-    setTimeout(function(){this.createOneGeneration()}.bind(this), 2000);
+    setTimeout(function(){this.createOneGeneration()}.bind(this), this.state.speed);
 
   } else {
     //nothing
@@ -275,7 +276,7 @@ generateGrid(height, width) {
         {this.state.board.grid.map((row) => {
       return <Row cells={row.cells} key={row.id} cellClick={this.cellClick} />
       })}
-      <ControlPannel clearBoard={this.clearBoard} startGenerations={this.startGenerations} changeSizeTo={this.changeSizeTo} changeSizeToL={this.changeSizeToL} pauseGenerations={this.pauseGenerations}/>
+      <ControlPannel clearBoard={this.clearBoard} startGenerations={this.startGenerations} changeSizeTo={this.changeSizeTo} changeSpeedTo={this.changeSpeedTo} pauseGenerations={this.pauseGenerations}/>
       </div>
   );
   }
@@ -329,6 +330,9 @@ class ControlPannel extends React.Component {
 <button className = "Button" onClick={() =>this.props.changeSizeTo(30,50)}>30x50</button>
 <button className = "Button" onClick={() =>this.props.changeSizeTo(50,70)}>50x70</button>
 <button className = "Button" onClick={() =>this.props.changeSizeTo(80,100)}>80x100</button>
+<button className = "Button" onClick={() =>this.props.changeSpeedTo(3000)}>Slow</button>
+<button className = "Button" onClick={() =>this.props.changeSpeedTo(2000)}>Medium</button>
+<button className = "Button" onClick={() =>this.props.changeSpeedTo(100)}>Fast</button>
 
 
 
